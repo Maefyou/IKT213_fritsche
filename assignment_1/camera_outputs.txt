@@ -1,0 +1,6 @@
+Webcam FPS: 30.0
+Image Height: 480
+Image Width: 640
+Image Channels: 3
+Image Size: 921600
+Image Data Type: uint8
