@@ -1,4 +1,4 @@
-import numpy as np
+mport numpy as np
 import cv2
 
 def print_image_information(image):
