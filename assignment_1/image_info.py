@@ -2,16 +2,11 @@ import numpy as np
 import cv2
 
 def print_image_information(image):
-    height = image.shape[0]
-    print(f"Height: {height}")
-    width = image.shape[1]
-    print(f"Width: {width}")
-    channels = image.shape[2]
-    print(f"Channels: {channels}")
-    size = image.size
-    print(f"Size: {size}")
-    dataype = image.dtype
-    print(f"Data type: {dataype}")
+    print(f"Height: {image.shape[0]}")
+    print(f"Width: {image.shape[1]}")
+    print(f"Channels: {image.shape[2]}")
+    print(f"Size: {image.size}")
+    print(f"Data type: {image.dtype}")
 
 def write_webcam_info():
     cap = cv2.VideoCapture(0)
