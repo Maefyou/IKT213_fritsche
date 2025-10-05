@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 def padding(image, border_with: int) -> np.ndarray:
-    padded_image = cv2.copyMakeBorder(image, border_with, border_with, border_with, border_with, cv2.BORDER_REPLICATE)
+    padded_image = cv2.copyMakeBorder(image, border_with, border_with, border_with, border_with, cv2.BORDER_REFLECT)
     return padded_image
 
 def crop(image, x_0,x_1,y_0,y_1) -> np.ndarray:
@@ -43,7 +43,17 @@ def hsv(image) -> np.ndarray:
 
 def hue_shift(image, shift_value: int) -> np.ndarray:
     hue_shifted = image.copy()
-    hue_shifted[:,:,0:3] = (hue_shifted[:,:,0:3] + shift_value) % 255
+    for i in range(hue_shifted.shape[0]):
+        for j in range(hue_shifted.shape[1]):
+            for k in range(hue_shifted.shape[2]):
+                new_value = int(hue_shifted[i,j,k]) + shift_value
+                match new_value:
+                    case v if v > 255:
+                        hue_shifted[i,j,k] = 255
+                    case v if v < 0:
+                        hue_shifted[i,j,k] = 0
+                    case v:
+                        hue_shifted[i,j,k] = v
     return hue_shifted
 
 def smoothing(image, kernel_size: int) -> np.ndarray:
@@ -53,10 +63,16 @@ def smoothing(image, kernel_size: int) -> np.ndarray:
     return smoothed_image
 
 def rotation(image, angle: float) -> np.ndarray:
-    hight, width = image.shape[:2]
-    center = (width // 2, hight // 2)
-    rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
-    rotated_image = cv2.warpAffine(image, rotation_matrix, (width, hight), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+    """
+    Rotate Image by 90 or 180 degrees using cv2.rotate for optimal performance. For other angles, return the original image.
+    """
+    match angle:
+        case 90:
+            rotated_image = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+        case 180:
+            rotated_image = cv2.rotate(image, cv2.ROTATE_180)
+        case _:
+            rotated_image = image.copy()
     return rotated_image
 
 if __name__ == "__main__":
@@ -70,4 +86,4 @@ if __name__ == "__main__":
     cv2.imwrite("solutions/lena_hsv.png", hsv(image))
     cv2.imwrite("solutions/lena_hue_shifted.png", hue_shift(image, 50))
     cv2.imwrite("solutions/lena_smoothed.png", smoothing(image, 15))
-    cv2.imwrite("solutions/lena_rotated.png", rotation(image, 45))
+    cv2.imwrite("solutions/lena_rotated.png", rotation(image, 90))
